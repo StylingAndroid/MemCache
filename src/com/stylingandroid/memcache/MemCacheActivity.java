@@ -14,6 +14,7 @@ public class MemCacheActivity extends Activity {
 	private ImageView imageView2 = null;
 
 	private MemoryCache memCache = null;
+	private LruMemoryCache lruMemCache = null;
 
 	@Override
 	public void onCreate( Bundle savedInstanceState )
@@ -24,6 +25,7 @@ public class MemCacheActivity extends Activity {
 		imageView1 = (ImageView) findViewById( R.id.imageView1 );
 		imageView2 = (ImageView) findViewById( R.id.imageView2 );
 		memCache = new MemoryCache( getApplicationContext() );
+		lruMemCache = new LruMemoryCache( getApplicationContext() );
 
 		loadManual();
 		loadManual();
@@ -37,6 +39,7 @@ public class MemCacheActivity extends Activity {
 		Log.d( TAG, "GC" );
 		Log.d( TAG, "Cached: " + memCache.isCached( ASSET_NAME ) );
 		Log.d( TAG, memCache.toString() );
+		loadLruCached();
 	}
 
 	private void loadManual()
@@ -55,6 +58,16 @@ public class MemCacheActivity extends Activity {
 		imageView1.setImageBitmap( memCache.getImage( ASSET_NAME ) );
 		tl.addSplit( "first" );
 		imageView2.setImageBitmap( memCache.getImage( ASSET_NAME ) );
+		tl.addSplit( "second" );
+		tl.dumpToLog();
+	}
+	
+	private void loadLruCached()
+	{
+		TimingLogger tl = new TimingLogger( TAG, "Lru Cached image loading" );
+		imageView1.setImageBitmap( lruMemCache.get( ASSET_NAME ) );
+		tl.addSplit( "first" );
+		imageView2.setImageBitmap( lruMemCache.get( ASSET_NAME ) );
 		tl.addSplit( "second" );
 		tl.dumpToLog();
 	}
