@@ -2,7 +2,7 @@ package com.stylingandroid.memcache;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.v4.util.LruCache;
+import android.util.LruCache;
 
 public class LruMemoryCache extends LruCache<String, Bitmap>
 {
@@ -10,7 +10,7 @@ public class LruMemoryCache extends LruCache<String, Bitmap>
 	
 	public LruMemoryCache(Context context)
 	{
-		super( 10 );
+		super( 5 * 1024 * 1024 );
 		this.context = context;
 	}
 
@@ -18,5 +18,11 @@ public class LruMemoryCache extends LruCache<String, Bitmap>
 	protected Bitmap create( String key )
 	{
 		return Utils.loadAsset( context, key );
+	}
+	
+	@Override
+	protected int sizeOf( String key, Bitmap value )
+	{
+		return value.getByteCount();
 	}
 }
